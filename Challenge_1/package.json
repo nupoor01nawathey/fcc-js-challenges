@@ -1,0 +1,17 @@
+{
+  "name": "js_challeneges",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sumAllInRange.js",
+  "scripts": {
+    "start": "nodemon sumAllInRange.js",
+    "test": "mocha *.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "expect": "^23.6.0",
+    "mocha": "^5.2.0"
+  }
+}
