@@ -3,49 +3,70 @@ const taskInput = document.querySelector("#task");
 const addTaskBtn = document.querySelector(".btn");
 const clearBtn = document.querySelector(".clear-tasks");
 const taskList = document.querySelector(".collection");
-
 const filterInput = document.querySelector("#filter");
+
 
 loadEventListeners();
 
 function loadEventListeners() {
-  document.addEventListener(DOMContentLoaded, getTasks);
+  document.addEventListener("DOMContentLoaded", getTasks);
   taskForm.addEventListener("submit", addTask);
-  taskList.addEventListener("click", clearTasks);
-  clearBtn.addEventListener("click", clearAllTasks);
-  filterInput.addEventListener("keyup", filterTasks);
+  // taskList.addEventListener("click", clearTask);
+  // clearBtn.addEventListener("click", clearAllTasks);
+  // filterInput.addEventListener("keyup", filterTasks);
 
 }
 
-function addTask(e) {
-  if(taskInput.value === "") {
-    alert('add a task!')
+function getTasks() {
+  let tasks;
+  if(localStorage.getItem('tasks') === null) {
+    tasks = [];
   } else {
+    tasks = JSON.parse(localStorage.getItem('tasks'));
+  }
+  tasks.forEach(task => {
     const li = document.createElement("li");
     li.className = "collection-item";
-    li.appendChild(document.createTextNode(taskInput.value));
+    li.appendChild(document.createTextNode(task));
     const a = document.createElement("a");
     a.setAttribute("href", "#");
     a.className = "delete-item secondary-content";
     a.innerHTML = "<i class=\"fa fa-remove\"></i>";
     li.appendChild(a);
     taskList.appendChild(li);
-    storeTaskInLocalStorage(taskInput.value);
-    taskInput.value = "";
+    task = "";
+
+  });
+}
+
+function addTask(e) {
+  if(taskInput.value === "") {
+    alert('add a task!')
   }
+  const li = document.createElement("li");
+  li.className = "collection-item";
+  li.appendChild(document.createTextNode(taskInput.value));
+  const a = document.createElement("a");
+  a.setAttribute("href", "#");
+  a.className = "delete-item secondary-content";
+  a.innerHTML = "<i class=\"fa fa-remove\"></i>";
+  li.appendChild(a);
+  taskList.appendChild(li);
+  storeTaskInLocalStorage(taskInput.value);
+  taskInput.value = "";
   e.preventDefault();
 }
 
-function clearTasks(e) {
-  console.log(e.target.parentElement);
-  if(e.target.parentElement.classList.contains("delete-item")) {
-    if(confirm('Are you sure?')) {
-      e.target.parentElement.remove();
-
-      removeTaskFromLocalStorage(e.target.parentElement);
-    }
+function storeTaskInLocalStorage(task) {
+  let tasks;
+  if(localStorage.getItem('tasks') === null) {
+    tasks = [];
+  } else {
+    tasks = JSON.parse(localStorage.getItem('tasks'));
   }
-
+  tasks.push(task);
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+  alert('Task Saved in LocalStoage');
 }
 
 function removeTaskFromLocalStorage(taskItem) {
@@ -53,27 +74,14 @@ function removeTaskFromLocalStorage(taskItem) {
   if(localStorage.getItem('tasks') === null) {
     tasks = [];
   } else {
-    tasks = JSON.stringify(localStorage.getItem('tasks'));
+    tasks = JSON.parse(localStorage.getItem('tasks'));
   }
-  tasks.forEach((task, index) => {
-    if(taskItem.textContent === task) {
-      tasks.splice(index, 1);
+  for(var i=0; i < tasks.length ; i++) {
+    if(taskItem.textContent === tasks[i]) {
+      tasks.splice(i, 1);
     }
-  });
+  }
   localStorage.setItem('tasks', JSON.stringify(tasks));
-}
-
-function clearAllTasks() {
-    // taskList.innerHTML = "";
-
-    while(taskList.firstChild) {
-      taskList.removeChild(taskList.firstChild);
-    }
-    removeTasksFromLocalStorage();
-}
-
-function removeTasksFromLocalStorage() {
-  localStorage.clear();
 }
 
 function filterTasks(e) {
@@ -88,37 +96,25 @@ function filterTasks(e) {
   });
 }
 
-document.body.addEventListener('click', deleteItem);
-function deleteItem(e) {
-    if(e.target.parentElement.classList.contains("delete-item")) {
-        e.target.parentElement.parentElement.remove();
-        // remove from localStorage as well
-
+function clearTask(e) {
+  if(e.target.parentElement.classList.contains("delete-item")) {
+    if(confirm('Are you sure?')) {
+      e.target.parentElement.parentElement.remove();
+      console.log(e.target.parentElement);
+      removeTaskFromLocalStorage(e.target.parentElement);
     }
+  }
 }
 
-function storeTaskInLocalStorage(task) {
-  let tasks;
-  if(localStorage.getItem('tasks') === null) {
-    tasks = [];
-  } else {
-    tasks = JSON.stringify(localStorage.getItem('tasks'));
+function clearAllTasks() {
+  // taskList.innerHTML = "";
+  while(taskList.firstChild) {
+    taskList.removeChild(taskList.firstChild);
   }
-  tasks.push(task);
-  localStorage.setItem('tasks', JSON.stringify(task));
-  alert('Task Saved in LocalStoage');
-  e.preventDefault();
+  removeTasksFromLocalStorage();
 }
 
-function getTasks() {
-  let tasks;
-  if(localStorage.getItem('tasks') === null) {
-    tasks = [];
-  } else {
-    tasks = JSON.stringify(localStorage.getItem('tasks'));
-  }
-  const getStoredTasks = JSON.parse(localStorage.getItem('tasks'));
-  getStoredTasks.forEach(eachStoredTask => {
-    console.log(eachStoredTask);
-  });
+
+function removeTasksFromLocalStorage() {
+  localStorage.clear();
 }
