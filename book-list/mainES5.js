@@ -27,16 +27,35 @@ UI.prototype.clearFields = function() {
     document.getElementById("title").value = "" ;
 }
 
+UI.prototype.showAlert = function(message, className) {
+    const div = document.createElement("div");
+    div.className = `alert ${className}`;
+    div.appendChild(document.createTextNode(message));
+
+    const form = document.getElementById("book-form");
+    const container = document.querySelector(".container");
+    container.insertBefore(div, form);
+
+    setTimeout(function() {
+        document.querySelector(".alert").remove();
+    }, 3000);
+
+}
+
 document.getElementById("book-form").addEventListener("submit", function(e) {
     const title = document.getElementById("title").value,
           author = document.getElementById("author").value,
           isbn = document.getElementById("isbn").value;
 
-    const book = new Book(title, author, isbn);
     const ui = new UI();
 
-    ui.addBookToList(book);
-    ui.clearFields();
+    if(title === '' || author === '' || isbn === '') {
+        ui.showAlert('Please fill in all fields', 'error');
+    } else {
+        const book = new Book(title, author, isbn);
 
+        ui.addBookToList(book);
+        ui.clearFields();
+    }
     e.preventDefault();
 });
