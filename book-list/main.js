@@ -1,1 +1,0 @@
-alert('Hell from Book list');
