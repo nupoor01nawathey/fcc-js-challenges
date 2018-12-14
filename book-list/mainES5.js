@@ -23,8 +23,8 @@ UI.prototype.addBookToList = function(book) {
 // clear input fields once book is added to the list
 UI.prototype.clearFields = function() {
     document.getElementById("title").value = "",
-    document.getElementById("title").value = "",
-    document.getElementById("title").value = "" ;
+    document.getElementById("author").value = "",
+    document.getElementById("isbn").value = "" ;
 }
 
 UI.prototype.showAlert = function(message, className) {
